@@ -1,6 +1,4 @@
-/*
-  (c) Copyright 2018, 2019 Phasmid Software
- */
+
 package edu.neu.coe.info6205.sort.elementary;
 
 import com.phasmidsoftware.args.Args;
