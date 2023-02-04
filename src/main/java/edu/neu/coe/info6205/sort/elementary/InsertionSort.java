@@ -55,10 +55,16 @@ public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> {
      * @param from the index of the first element to sort
      * @param to   the index of the first element not to sort
      */
-    public void sort(X[] xs, int from, int to) {
-        final Helper<X> helper = getHelper();
-
+    public void sort(X[] xs, int start, int end) {
+      
         // FIXME
+        final Helper<X> helper = getHelper();
+        for (int i = start + 1; i < end; i++) {
+            int j = i;
+            while (j > start && helper.swapStableConditional(xs, j)) {
+                j--;
+            }
+        }
         // END 
     }
 
