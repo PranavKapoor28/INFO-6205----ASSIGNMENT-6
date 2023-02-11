@@ -122,7 +122,7 @@ public class UF_HWQUPC implements UF {
      */
     public void union(int p, int q) {
         // CONSIDER can we avoid doing find again?
-        mergeComponents(find(p), find(q));
+        mergeComponents(p,q);
         count--;
     }
 
@@ -181,21 +181,32 @@ public class UF_HWQUPC implements UF {
 
     private void mergeComponents(int i, int j) {
         // FIXME make shorter root point to taller one
-        // END 
-    	if(height[i]<height[j]) parent[i]=j;
-    	else if(height[i]>height[j]) parent[j]=i;
-    	else {
-    		parent[j]=i;
-    		height[i]++;
-    	}
+       
+    	  int rootI = find(i); 
+    	  int rootJ = find(j);
+
+    	    if (rootI == rootJ) {
+    	      
+    	        return;
+    	    }
+
+    	    if (height[rootI] < height[rootJ]) {
+    	        
+    	        parent[rootI] = rootJ;
+    	    } else if (height[rootI] > height[rootJ]) {
+    	        
+    	        parent[rootJ] = rootI;
+    	    } else {
+    	      
+    	        parent[rootJ] = rootI;
+    	        height[rootI]++;
+    	    }
+    	 // END 
     }
 
-    /**
-     * This implements the single-pass path-halving mechanism of path compression
-     */
+
     private void doPathCompression(int i) {
         // FIXME update parent to value of grandparent
-        // END 
     	
     	int node=find(i);
     	while(i!=node) {
@@ -203,5 +214,7 @@ public class UF_HWQUPC implements UF {
     		parent[i]=node;
     		i=next;
     	}
+    	
+    	// END 
     }
 }
