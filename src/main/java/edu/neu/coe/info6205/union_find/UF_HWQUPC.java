@@ -80,21 +80,22 @@ public class UF_HWQUPC implements UF {
      */
     public int find(int p) {
         validate(p);
-        int root = p;
+       
         // FIXME 
-        // END 
         
-        while(root!=parent[root]) {
-        	root=parent[root];
+        int n=p;
+        while(p!=parent[n]) {
+        	n=parent[n];
         }
         if(pathCompression) {
-        	while(p!=root) {
+        	while(p!=n) {
         		int next=parent[p];
-        		parent[p]=root;
+        		parent[p]=n;
         		p=next;
         	}
         }
-        return root;
+     // END 
+        return n;
     }
 
     /**
