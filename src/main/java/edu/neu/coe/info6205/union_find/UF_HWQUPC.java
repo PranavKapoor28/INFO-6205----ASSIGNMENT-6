@@ -81,7 +81,7 @@ public class UF_HWQUPC implements UF {
     public int find(int p) {
         validate(p);
         int root = p;
-        // FIXME
+        // FIXME 
         // END 
         
         while(root!=parent[root]) {

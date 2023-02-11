@@ -23,7 +23,7 @@ public class HWQUPC_Solution {
             no_pairs += 1;
             if (uf.connected(x, y) == false) {
                 uf.union(x, y);
-                no_connections++;
+                no_connections++; 
             }
         }
         System.out.println("Number of connections:" + no_connections);
@@ -33,7 +33,7 @@ public class HWQUPC_Solution {
     
 public static void main (String arg[]) {
     	
-        int n = 408;
+        int n = 208;
 
         XYSeries series = new XYSeries("Pairs Count vs Node Count");
         XYSeries series2 = new XYSeries("Pairs Count vs Node Count");
@@ -49,7 +49,7 @@ public static void main (String arg[]) {
         }
         
         ratio = ratio / 7;
-        n = 408;
+        n = 308;
         for (int i = 0; i < 7; i++) {
         	
        	 System.out.println("Number of nodes: " + n);
