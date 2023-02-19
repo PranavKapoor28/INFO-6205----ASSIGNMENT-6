@@ -59,12 +59,24 @@ public class InsertionSort<X extends Comparable<X>> extends SortWithHelper<X> {
       
         // FIXME
         final Helper<X> helper = getHelper();
-        for (int i = start + 1; i < end; i++) {
-            int j = i;
-            while (j > start && helper.swapStableConditional(xs, j)) {
-                j--;
-            }
+        int index = start + 1;
+        while (index < end) {
+        	int j = index;
+        	while (j > start) {
+        		if (helper.swapStableConditional(xs, j)) {
+        			j--;
+        		} else {
+        			break;
+        		}
+        	}
+        	index++;
         }
+//        for (int i = start + 1; i < end; i++) {
+//            int j = i;
+//            while (j > start && helper.swapStableConditional(xs, j)) {
+//                j--;
+//            }
+//        }
         // END 
     }
 
