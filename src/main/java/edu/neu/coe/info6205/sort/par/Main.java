@@ -68,6 +68,7 @@ public class Main {
         long st = System.currentTimeMillis();
         for (int t = 0; t < 25; t++) {
             for (int i = 0; i < array.length; i++) array[i] = random.nextInt(10000000);
+            
             ParSort.sort(array, 0, array.length);
         }
 	    long en = System.currentTimeMillis();
