@@ -5,6 +5,7 @@ import edu.neu.coe.info6205.sort.InstrumentedHelper;
 import edu.neu.coe.info6205.util.*;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 import edu.neu.coe.info6205.sort.elementary.HeapSort;
@@ -14,65 +15,74 @@ import static java.util.concurrent.CompletableFuture.runAsync;
 public class main {
 
     public static void main(String[] args) {
-        try {
-            File fileHeap = new File("HeapBenchMark.csv");
-            File fileMerge = new File("MergeBenchMark.csv");
-            File fileQuick = new File("QuickBenchMark.csv");
-//            File NIfileHeap = new File("NoInstrumentationHeapBenchMark.csv");
-//            File NIfileMerge = new File("NoInstrumentationMergeBenchMark.csv");
-//            File NIfileQuick = new File("NoInstrumentationQuickBenchMark.csv");
-            
-            fileHeap.createNewFile();
-            fileQuick.createNewFile();
-            fileMerge.createNewFile();
-//            NIfileHeap.createNewFile();
-//            NIfileQuick.createNewFile();
-//            NIfileMerge.createNewFile();
-            
-            FileWriter fileWriterHeap = new FileWriter(fileHeap);
-            FileWriter fileWriterMerge = new FileWriter(fileMerge);
-            FileWriter fileWriterQuick = new FileWriter(fileQuick);
-//            FileWriter NIfileWriterHeap = new FileWriter(NIfileHeap);
-//            FileWriter NIfileWriterMerge = new FileWriter(NIfileMerge);
-//            FileWriter NIfileWriterQuick = new FileWriter(NIfileQuick);
-            
-            fileWriterHeap.write(getHeaderString());
-            fileWriterMerge.write(getHeaderString());
-            fileWriterQuick.write(getHeaderString());
-//            NIfileWriterHeap.write(getHeaderString());
-//            NIfileWriterMerge.write(getHeaderString());
-//            NIfileWriterQuick.write(getHeaderString());
-            boolean instrumentation = true;
+      
+            fileOperation();
+    }
 
+    private static void fileOperation() {
+    	try{
+        File fHeap = new File("HeapBenchMark.csv");
+        File fMerge = new File("MergeBenchMark.csv");
+        File fQuick = new File("QuickBenchMark.csv");
 
-            System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
-            Config config = Config.setupConfig("true", "", "1", "", "");
-            Config no_config = Config.setupConfig("false", "", "1", "", "");
+        
+        createFile(fHeap);
+        createFile(fQuick);
+        createFile(fMerge);
+  
 
-            int start = 10000;
-            int end = 256000;
+        
+        FileWriter fileWriterHeap = new FileWriter(fHeap);
+        FileWriter fileWriterMerge = new FileWriter(fMerge);
+        FileWriter fileWriterQuick = new FileWriter(fQuick);
 
-            CompletableFuture<FileWriter> heapSort = runHeapSort(start, end, config, fileWriterHeap);
-            CompletableFuture<FileWriter> quickSort = runQuickSort(start, end, config, fileWriterQuick);
-            CompletableFuture<FileWriter> mergeSort = runMergeSort(start, end, config, fileWriterMerge);
-//            CompletableFuture<FileWriter> NIheapSort = runHeapSort(start, end, no_config, NIfileWriterHeap);
-//            CompletableFuture<FileWriter> NIquickSort = runQuickSort(start, end, no_config, NIfileWriterQuick);
-//            CompletableFuture<FileWriter> NImergeSort = runMergeSort(start, end, no_config, NIfileWriterMerge);
-
-//            mergeSort.join();
-            quickSort.join();
-            heapSort.join();
-            mergeSort.join();
-//            NIquickSort.join();
-//            NIheapSort.join();
-//            NImergeSort.join();
-
-
-        } catch (Exception e) {
+        writeFile(fileWriterHeap);
+        writeFile(fileWriterMerge);
+        writeFile(fileWriterQuick);
+        
+        runSort(fileWriterHeap,fileWriterMerge,fileWriterQuick);
+    	}
+    	catch (Exception e) {
             System.out.println("error while sorting main" + e);
         }
     }
+    
+    private static void runSort(FileWriter f1,FileWriter f2,FileWriter f3) {
+    	boolean instrumentation = true;
 
+
+        System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
+        Config config = Config.setupConfig("true", "", "1", "", "");
+        Config no_config = Config.setupConfig("false", "", "1", "", "");
+
+        int start = 10000;
+        int end = 256000;
+
+        CompletableFuture<FileWriter> heapSort = runHeapSort(start, end, config, f1);
+        CompletableFuture<FileWriter> quickSort = runQuickSort(start, end, config, f3);
+        CompletableFuture<FileWriter> mergeSort = runMergeSort(start, end, config, f2);
+
+        quickSort.join();
+        heapSort.join();
+        mergeSort.join();
+    }
+    
+    private static void createFile(File f) {
+    	try {
+			f.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    private static void writeFile(FileWriter f) {
+    	try {
+    		 f.write(getHeaderString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
     private static CompletableFuture runHeapSort(int start, int end, Config config, FileWriter fileWriter) {
         return CompletableFuture.runAsync(
@@ -198,25 +208,6 @@ public class main {
         sb.append(n+",");
         sb.append(time+",");
 
-//        if (instrumentation) {
-            /*
-            sb.append(Utilities.asInt(statPack.getStatistics("hits").mean()) + ",");
-            sb.append(Utilities.asInt(statPack.getStatistics("hits").stdDev()) + ",");
-            sb.append(Utilities.formatDecimal3Places(statPack.getStatistics("hits").normalizedMean()) + ",");
-
-            sb.append(Utilities.asInt(statPack.getStatistics("swaps").mean()) + ",");
-            sb.append(Utilities.asInt(statPack.getStatistics("swaps").stdDev()) + ",");
-            sb.append(Utilities.formatDecimal3Places(statPack.getStatistics("swaps").normalizedMean()) + ",");
-
-            sb.append(Utilities.asInt(statPack.getStatistics("compares").mean()) + ",");
-            sb.append(Utilities.asInt(statPack.getStatistics("compares").stdDev()) + ",");
-            sb.append(Utilities.formatDecimal3Places(statPack.getStatistics("compares").normalizedMean()) + ",");
-
-            sb.append(Utilities.asInt(statPack.getStatistics("fixes").mean()) + ",");
-            sb.append(Utilities.asInt(statPack.getStatistics("fixes").stdDev()) + ",");
-            sb.append(Utilities.formatDecimal3Places(statPack.getStatistics("fixes").normalizedMean()) + "\n");
-
-             */
 
             sb.append(statPack.getStatistics("hits").mean() + ",");
             sb.append(statPack.getStatistics("hits").stdDev() + ",");
@@ -233,9 +224,7 @@ public class main {
             sb.append(statPack.getStatistics("fixes").mean() + ",");
             sb.append(statPack.getStatistics("fixes").stdDev() + ",");
             sb.append(statPack.getStatistics("fixes").normalizedMean() + "\n");
-//        } else {
-//            sb.append("\n");
-//        }
+
         System.out.println();
         return sb.toString();
 
