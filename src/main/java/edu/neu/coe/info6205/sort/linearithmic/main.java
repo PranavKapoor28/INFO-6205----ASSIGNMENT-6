@@ -48,7 +48,7 @@ public class main {
     }
     
     private static void runSort(FileWriter f1,FileWriter f2,FileWriter f3) {
-    	boolean instrumentation = true;
+    	boolean inst = true;
 
 
         System.out.println("Degree of parallelism: " + ForkJoinPool.getCommonPoolParallelism());
